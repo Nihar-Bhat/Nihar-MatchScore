@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <meta name="description" content="Nihar Matchpoint — a simple badminton scoreboard for every match.">
+  <title>Nihar Matchpoint | Badminton Scoreboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Nihar Matchpoint home">
+      <span class="brand-mark">N<span>+</span></span>
+      <span><strong>Nihar Matchpoint</strong><small>EVERY POINT MATTERS</small></span>
+    </a>
+    <span class="live-pill"><i></i> MATCH CENTRE</span>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">BADMINTON • SCORE • WIN</p>
+        <h1>Make every<br><span>point count.</span></h1>
+        <p class="hero-sub">Create a match, share it with your players, and keep the score updated across devices.</p>
+        <button class="primary-btn" id="open-create">＋ Create a match</button>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="court-lines"></div>
+        <div class="shuttle">✦</div>
+        <div class="art-caption">PLAY YOUR<br><b>BEST GAME.</b></div>
+      </div>
+    </section>
+
+    <section class="section-heading">
+      <div><p class="eyebrow">YOUR COURT, YOUR RULES</p><h2>Match centre</h2></div>
+      <button class="secondary-btn" id="refresh-btn">↻ Refresh</button>
+    </section>
+
+    <div id="notice" class="notice hidden" role="status"></div>
+    <section id="matches" class="matches-grid" aria-live="polite">
+      <div class="loading-card"><span class="spinner"></span> Loading matches…</div>
+    </section>
+
+    <section class="how-panel">
+      <div class="how-icon">⌁</div>
+      <div><h3>Simple to use. Ready for the court.</h3><p>Anyone can create a match. Each match has its own editing PIN, so only people who know that PIN can change its score.</p></div>
+    </section>
+  </main>
+
+  <footer><span>© <span id="year"></span> Nihar Matchpoint</span><span>BUILT FOR THE LOVE OF THE GAME 🏸</span></footer>
+
+  <dialog id="create-dialog" class="dialog">
+    <form id="create-form" class="dialog-content">
+      <button type="button" class="dialog-close" data-close="create-dialog" aria-label="Close">×</button>
+      <p class="eyebrow">NEW MATCH</p><h2>Set up your game</h2>
+      <label>Match type
+        <select id="match-type"><option value="singles">Singles</option><option value="doubles">Doubles</option></select>
+      </label>
+      <div class="form-grid">
+        <label id="label-a">Player / Team A<input id="name-a" maxlength="50" placeholder="e.g. Nihar" required></label>
+        <label id="label-b">Player / Team B<input id="name-b" maxlength="50" placeholder="e.g. Arjun" required></label>
+      </div>
+      <div class="form-grid">
+        <label>Points to win a game<input id="points" type="number" min="1" max="99" value="21" required></label>
+        <label>Games per match<select id="best-of"><option value="1">Best of 1</option><option value="3" selected>Best of 3</option><option value="5">Best of 5</option></select></label>
+      </div>
+      <label>Editing PIN <input id="create-pin" type="password" inputmode="numeric" minlength="4" maxlength="12" placeholder="Choose 4–12 digits" required></label>
+      <p class="field-note">Share this PIN only with people who should be able to edit the score. The PIN cannot be recovered.</p>
+      <button class="primary-btn full-btn" type="submit">Create match →</button>
+      <p class="form-error" id="create-error"></p>
+    </form>
+  </dialog>
+
+  <dialog id="match-dialog" class="dialog match-dialog">
+    <div class="dialog-content match-content">
+      <button type="button" class="dialog-close" data-close="match-dialog" aria-label="Close">×</button>
+      <p class="eyebrow" id="match-kicker">MATCH SCOREBOARD</p>
+      <h2 id="match-title">Match</h2>
+      <div id="match-status" class="match-status">IN PROGRESS</div>
+      <div class="scoreboard">
+        <div class="score-side"><span class="team-label">SIDE A</span><h3 id="score-name-a">Player A</h3><strong id="score-a">0</strong><div class="score-actions"><button data-score="a" data-delta="-1" aria-label="Subtract one point from A">−</button><button data-score="a" data-delta="1" aria-label="Add one point to A">+</button></div></div>
+        <div class="score-divider"><span>VS</span><i></i><small id="game-label">GAME 1</small></div>
+        <div class="score-side"><span class="team-label">SIDE B</span><h3 id="score-name-b">Player B</h3><strong id="score-b">0</strong><div class="score-actions"><button data-score="b" data-delta="-1" aria-label="Subtract one point from B">−</button><button data-score="b" data-delta="1" aria-label="Add one point to B">+</button></div></div>
+      </div>
+      <div id="game-history" class="game-history"></div>
+      <div id="winner-banner" class="winner-banner hidden"></div>
+      <div class="match-controls">
+        <button class="secondary-btn" id="edit-score-btn">🔐 Edit score</button>
+        <button class="secondary-btn" id="next-game-btn">Next game ↗</button>
+      </div>
+      <p class="field-note">Scores refresh automatically while this match is open.</p>
+      <p class="form-error" id="match-error"></p>
+    </div>
+  </dialog>
+
+  <dialog id="pin-dialog" class="dialog pin-dialog">
+    <form id="pin-form" class="dialog-content">
+      <button type="button" class="dialog-close" data-close="pin-dialog" aria-label="Close">×</button>
+      <p class="eyebrow">EDIT PERMISSION</p><h2>Enter match PIN</h2>
+      <p class="muted">Enter the PIN set when this match was created to enable score changes.</p>
+      <label>Editing PIN<input id="edit-pin" type="password" inputmode="numeric" minlength="4" maxlength="12" required placeholder="Match PIN"></label>
+      <button class="primary-btn full-btn" type="submit">Unlock score editing</button>
+      <p class="form-error" id="pin-error"></p>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

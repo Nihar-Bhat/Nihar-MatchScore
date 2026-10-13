@@ -1,1 +1,0 @@
-/* Temporary mode: no Firebase or backend required. */\nwindow.MATCHPOINT_CONFIG = { apiBaseUrl: "", temporaryMode: true };
